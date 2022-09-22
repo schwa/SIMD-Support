@@ -60,7 +60,7 @@ public struct AngleFormatStyle<Value>: FormatStyle where Value: BinaryFloatingPo
 }
 
 public extension Angle {
-    // angle between the vector and the X axis.
+    /// angle between the vector and the Z axis.
     init(x: Value, y: Value) {
         self = .init(radians: atan2(y, x))
     }
