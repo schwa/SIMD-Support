@@ -8,6 +8,4 @@ SIMDSupport is released under the BSD 3-clause license. See LICENSE for details.
 
 ## Caveats
 
-SIMDSupport is a work in progress and should be consider "hobby" code.
-
-See CAVEAT.md for details.
+This code is incomplete "hobby" code and should probably not be used in production. See CAVEATS.md for more details.

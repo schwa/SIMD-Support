@@ -1,6 +1,11 @@
 import simd
 
 public extension SIMD3 {
+    /**
+     ```swift doctest
+     SIMD3<Float>(1, 2, 3).xy // => SIMD2<Float>(1, 2)
+     ```
+     */
     var xy: SIMD2<Scalar> {
         get {
             SIMD2(x, y)
