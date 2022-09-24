@@ -7,6 +7,11 @@ import simd
 public struct Angle<Value>: Equatable, Hashable, Comparable where Value: BinaryFloatingPoint {
     public var radians: Value
 
+    /**
+    ```swift doctest
+    Angle(radians: 0.0).degrees // => 0.0
+    ```
+    */
     public var degrees: Value {
         get {
             radiansToDegrees(radians)
@@ -20,6 +25,12 @@ public struct Angle<Value>: Equatable, Hashable, Comparable where Value: BinaryF
         self.radians = radians
     }
 
+    /**
+    ```swift doctest
+    Angle(degrees: 0.0).degrees // => 0.0
+    Angle(degrees: 360.0).radians // => .pi * 2
+    ```
+    */
     public init(degrees: Value) {
         radians = degreesToRadians(degrees)
     }
@@ -54,7 +65,12 @@ extension Angle: Codable where Value: Codable {
 // MARK: -
 
 public extension Angle {
-    /// angle between the vector and the Z axis.
+    /**
+    Angle between the vector and the Z axis.
+    ```swift doctest
+    Angle(x: 1, y: 1).degrees // => 45
+    ```
+    */
     init(x: Value, y: Value) {
         self = .init(radians: atan2(y, x))
     }

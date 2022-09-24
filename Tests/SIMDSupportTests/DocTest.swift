@@ -1,6 +1,22 @@
 import XCTest
 @testable import SIMDSupport
 
+final class Angle_DocTests: XCTestCase {
+    func test_0880dc04() throws {
+        XCTAssertEqual(Angle(radians: 0.0).degrees, 0.0)
+    }
+
+    func test_0b90e805() throws {
+        XCTAssertEqual(Angle(degrees: 0.0).degrees, 0.0)
+        XCTAssertEqual(Angle(degrees: 360.0).radians, .pi * 2)
+    }
+
+    func test_0708105e() throws {
+        XCTAssertEqual(Angle(x: 1, y: 1).degrees, 45)
+    }
+
+}   
+
 final class CoreGraphics_DocTests: XCTestCase {
     func test_07706f01() throws {
         XCTAssertEqual(CGPoint(SIMD2<Float>(1, 2)), CGPoint(x: 1, y: 2))
