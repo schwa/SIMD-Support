@@ -2,6 +2,9 @@ import simd
 
 // https://github.com/subokita/Arcball/blob/master/Arcball/Arcball.cpp
 
+/**
+ An tool for converting mouse movement/touches into 3D rotation
+ */
 public struct Arcball {
     public var size: SIMD2<Float>
     public var xAxis = true

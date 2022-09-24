@@ -1,5 +1,9 @@
 import simd
 
+/**
+A type to represent a 3d transformation as an `SRT` or a SIMD matrix.
+*/
+*/
 public struct Transform: Codable, Equatable {
     public enum Storage: Equatable {
         case matrix(simd_float4x4)
@@ -111,5 +115,17 @@ public struct Transform: Codable, Equatable {
 public extension Transform {
     static func translation(_ translation: SIMD3<Float>) -> Transform {
         Transform(translation: translation)
+    }
+}
+
+public extension Transform {
+    func rotated(_ r: simd_quatf) -> Transform {
+        var copy = self
+        copy.rotation *= r
+        return copy
+    }
+
+    func rotated(angle: Angle<Float>, axis: SIMD3<Float>) -> Transform {
+        rotated(simd_quatf(angle: angle, axis: axis))
     }
 }

@@ -1,5 +1,8 @@
 import simd
 
+/**
+A type to represent a 3d transformation as a concatenation of a rotation, a translation and a scale.
+*/
 public struct SRT: Hashable {
     public var scale: SIMD3<Float> = .unit
     public var rotation: simd_quatf = .identity

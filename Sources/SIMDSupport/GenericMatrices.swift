@@ -1,5 +1,8 @@
 import simd
 
+/**
+ A protocol to provide common methods for the SIMD matrix types
+ */
 public protocol SIMDMatrix {
     associatedtype Scalar: FloatingPoint
     associatedtype ColumnType: SIMD

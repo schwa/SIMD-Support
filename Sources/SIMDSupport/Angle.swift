@@ -1,6 +1,9 @@
 import Foundation
 import simd
 
+/**
+ A geometric angle whose value you access in either radians or degrees.
+ */
 public struct Angle<Value>: Equatable, Hashable, Comparable where Value: BinaryFloatingPoint {
     public var radians: Value
 
@@ -50,15 +53,6 @@ extension Angle: Codable where Value: Codable {
 
 // MARK: -
 
-public struct AngleFormatStyle<Value>: FormatStyle where Value: BinaryFloatingPoint {
-    public init() {}
-
-    public func format(_ value: Angle<Value>) -> String {
-        let degrees = FloatingPointFormatStyle().precision(.fractionLength(1)).format(value.degrees)
-        return "\(degrees)°"
-    }
-}
-
 public extension Angle {
     /// angle between the vector and the Z axis.
     init(x: Value, y: Value) {
@@ -78,4 +72,32 @@ public extension Angle where Value: SIMDScalar {
 
 public func atan2<F>(_ y: F, _ x: F) -> F where F: BinaryFloatingPoint {
     F(atan2(Double(y), Double(x)))
+}
+
+public extension simd_quatf {
+    init(angle: Angle<Float>, axis: SIMD3<Float>) {
+        self = simd_quatf(angle: angle.radians, axis: axis)
+    }
+}
+
+public extension Angle where Value.RawSignificand: FixedWidthInteger {
+    static func randomDegrees(in range: ClosedRange<Value>) -> Angle {
+        let value = Value.random(in: range)
+        return Angle.degrees(value)
+    }
+}
+
+public extension SIMD2 where Scalar: BinaryFloatingPoint {
+    init(length: Scalar, angle: Angle<Scalar>) {
+        self = SIMD2(cos(angle.radians) * length, sin(angle.radians))
+    }
+}
+
+public struct AngleFormatStyle<Value>: FormatStyle where Value: BinaryFloatingPoint {
+    public init() {}
+
+    public func format(_ value: Angle<Value>) -> String {
+        let degrees = FloatingPointFormatStyle().precision(.fractionLength(1)).format(value.degrees)
+        return "\(degrees)°"
+    }
 }
