@@ -39,15 +39,3 @@ class MatrixDecompositionTests: XCTestCase {
         XCTAssertEqual(srt, decomposed)
     }
 }
-
-public func XCTAssertEqual<T>(_ expression1: @escaping @autoclosure () throws -> [T], _ expression2: @escaping @autoclosure () throws -> [T], accuracy: T, _ message: @escaping @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) where T: Numeric {
-    XCTAssertNoThrow {
-        zip(try expression1(), try expression2()).forEach {
-            XCTAssertEqual($0, $1, accuracy: accuracy, message(), file: file, line: line)
-        }
-    }
-}
-
-public func XCTAssertEqual(_ expression1: @escaping @autoclosure () throws -> simd_float4x4, _ expression2: @escaping @autoclosure () throws -> simd_float4x4, accuracy: Float, _ message: @escaping @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) {
-    XCTAssertEqual(try expression1().scalars, try expression2().scalars, accuracy: accuracy, message(), file: file, line: line)
-}
