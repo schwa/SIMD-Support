@@ -49,7 +49,7 @@ public extension Euler where Scalar == Double {
 
         let siny_cosp = 2 * (q.w * q.z + q.x * q.y)
         let cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
-        let roll = atan2(siny_cosp, cosy_cosp)
+        let yaw = atan2(siny_cosp, cosy_cosp)
 
         let sinp = 2 * (q.w * q.y - q.z * q.x)
         let pitch: Double
@@ -62,7 +62,7 @@ public extension Euler where Scalar == Double {
 
         let sinr_cosp = 2 * (q.w * q.x + q.y * q.z)
         let cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y)
-        let yaw = atan2(sinr_cosp, cosr_cosp)
+        let roll = atan2(sinr_cosp, cosr_cosp)
 
         self = Euler(roll: roll, pitch: pitch, yaw: yaw)
     }
@@ -73,9 +73,9 @@ public extension simd_quatd {
         let roll2: Double = euler.roll / 2
         let pitch2: Double = euler.pitch / 2
         let yaw2: Double = euler.yaw / 2
-        let ix: Double = cos(roll2) * cos(pitch2) * sin(yaw2) - sin(roll2) * sin(pitch2) * cos(yaw2)
+        let ix: Double = sin(roll2) * cos(pitch2) * cos(yaw2) - cos(roll2) * sin(pitch2) * sin(yaw2)
         let iy: Double = cos(roll2) * sin(pitch2) * cos(yaw2) + sin(roll2) * cos(pitch2) * sin(yaw2)
-        let iz: Double = sin(roll2) * cos(pitch2) * cos(yaw2) - cos(roll2) * sin(pitch2) * sin(yaw2)
+        let iz: Double = cos(roll2) * cos(pitch2) * sin(yaw2) - sin(roll2) * sin(pitch2) * cos(yaw2)
         let r: Double = cos(roll2) * cos(pitch2) * cos(yaw2) + sin(roll2) * sin(pitch2) * sin(yaw2)
         self = .init(ix: ix, iy: iy, iz: iz, r: r)
     }
