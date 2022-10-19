@@ -86,10 +86,6 @@ public extension Angle where Value: SIMDScalar {
     }
 }
 
-public func atan2<F>(_ y: F, _ x: F) -> F where F: BinaryFloatingPoint {
-    F(atan2(Double(y), Double(x)))
-}
-
 public extension simd_quatf {
     init(angle: Angle<Float>, axis: SIMD3<Float>) {
         self = simd_quatf(angle: angle.radians, axis: axis)
@@ -109,11 +105,25 @@ public extension SIMD2 where Scalar: BinaryFloatingPoint {
     }
 }
 
+// MARK: -
+
 public struct AngleFormatStyle<Value>: FormatStyle where Value: BinaryFloatingPoint {
     public init() {}
 
     public func format(_ value: Angle<Value>) -> String {
         let degrees = FloatingPointFormatStyle().precision(.fractionLength(1)).format(value.degrees)
         return "\(degrees)°"
+    }
+}
+
+public extension FormatStyle where Self == AngleFormatStyle<Float>, FormatInput == SIMDSupport.Angle<Float> {
+    static var degrees: Self {
+        AngleFormatStyle<Float>()
+    }
+}
+
+public extension FormatStyle where Self == AngleFormatStyle<Double>, FormatInput == SIMDSupport.Angle<Double> {
+    static var degrees: Self {
+        AngleFormatStyle<Double>()
     }
 }
