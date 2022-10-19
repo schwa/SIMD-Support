@@ -22,7 +22,7 @@ public extension Euler {
     }
 
     static func + (lhs: Self, rhs: Self) -> Self {
-        .init(roll: lhs.roll + rhs.roll, pitch: lhs.pitch + rhs.pitch, yaw: lhs.pitch + rhs.pitch)
+        .init(roll: lhs.roll + rhs.roll, pitch: lhs.pitch + rhs.pitch, yaw: lhs.yaw + rhs.yaw)
     }
 
     init <Other>(_ other: Euler<Other>) {

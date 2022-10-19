@@ -37,4 +37,11 @@ class EulerTests: XCTestCase {
         XCTAssertEqual(e1, e2, accuracy: 0.001)
     }
 
+    func testArithmetric() throws {
+        let e1 = Euler<Float>(roll: 1, pitch: 2, yaw: 3) + .identity
+        XCTAssertEqual(e1, Euler<Float>(roll: 1, pitch: 2, yaw: 3))
+        XCTAssertEqual(e1 + e1, Euler<Float>(roll: 2, pitch: 4, yaw: 6))
+
+    }
+
 }
