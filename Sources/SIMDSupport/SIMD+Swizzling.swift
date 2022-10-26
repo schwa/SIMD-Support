@@ -68,3 +68,4 @@ public extension SIMD3 where Scalar: BinaryFloatingPoint {
         self = SIMD3(xz[0], 0, xz[1])
     }
 }
+
