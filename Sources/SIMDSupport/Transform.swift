@@ -3,8 +3,8 @@ import simd
 /**
 A type to represent a 3d transformation as an `SRT` or a SIMD matrix.
 */
-public struct Transform: Codable, Equatable {
-    public enum Storage: Equatable {
+public struct Transform: Codable, Hashable {
+    public enum Storage: Equatable, Hashable {
         case matrix(simd_float4x4)
         case srt(SRT)
     }

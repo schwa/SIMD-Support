@@ -143,6 +143,15 @@ extension simd_float4x4: Codable {
     }
 }
 
+extension simd_float4x4: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        rows.0.hash(into: &hasher)
+        rows.1.hash(into: &hasher)
+        rows.2.hash(into: &hasher)
+        rows.3.hash(into: &hasher)
+    }
+}
+
 public extension simd_float3x3 {
     @inlinable init(truncating other: simd_float4x4) {
         self = other.truncated3x3
