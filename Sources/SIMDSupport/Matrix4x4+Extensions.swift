@@ -1,3 +1,4 @@
+import Foundation
 import simd
 
 public extension simd_float4x4 {
