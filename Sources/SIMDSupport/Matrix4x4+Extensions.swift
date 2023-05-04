@@ -22,7 +22,7 @@ public extension simd_float4x4 {
 
     @inlinable init(rotationAngle angle: Float, axis: SIMD3<Float>) {
         let quat = simd_quaternion(angle, axis)
-        self = simd_float4x4.identity * quat
+        self = simd_float4x4(quat)
     }
 
     @inlinable static func scaled(_ s: SIMD3<Float>) -> simd_float4x4 {
@@ -34,8 +34,7 @@ public extension simd_float4x4 {
     }
 
     @inlinable static func rotation(angle: Float, axis: SIMD3<Float>) -> simd_float4x4 {
-        let quat = simd_quaternion(angle, axis)
-        return simd_float4x4.identity * quat
+        return simd_float4x4(simd_quaternion(angle, axis))
     }
 }
 
