@@ -15,12 +15,6 @@ public extension simd_float4x4 {
 }
 
 public extension simd_float4x4 {
-    static func orthographic() -> simd_float4x4 {
-        simd_float4x4(diagonal: [1, 1, 0, 1])
-    }
-}
-
-public extension simd_float4x4 {
     static func perspective(aspect: Float, fovy: Float, near: Float, far: Float) -> Self {
         let yScale = 1 / tan(fovy * 0.5)
         let xScale = yScale / aspect
