@@ -8,7 +8,8 @@ class MatrixDecompositionTests: XCTestCase {
         let srt = SRT()
         let matrix = srt.matrix
         XCTAssertTrue(matrix.isAffine)
-        let decomposed = matrix.decompose
+        let (scale, rotatation, translation) = matrix.decompose
+        let decomposed = SRT(scale: scale, rotation: rotatation, translation: translation)
         XCTAssertEqual(srt, decomposed)
     }
 
@@ -17,7 +18,8 @@ class MatrixDecompositionTests: XCTestCase {
         let matrix = srt.matrix
         print(matrix)
         XCTAssertTrue(matrix.isAffine)
-        let decomposed = matrix.decompose
+        let (scale, rotatation, translation) = matrix.decompose
+        let decomposed = SRT(scale: scale, rotation: rotatation, translation: translation)
         print(decomposed.matrix)
         XCTAssertEqual(srt, decomposed)
     }
@@ -28,14 +30,15 @@ class MatrixDecompositionTests: XCTestCase {
         let matrix = srt.matrix
         XCTAssertTrue(matrix.isAffine)
         let decomposed = matrix.decompose
-        XCTAssertEqual(simd_float4x4(srt.rotation), simd_float4x4(decomposed.rotation), accuracy: .ulpOfOne)
+        XCTAssertEqual(simd_float4x4(srt.rotation), decomposed.rotation, accuracy: .ulpOfOne)
     }
 
     func testTranslation() {
         let srt = SRT(translation: [3, 2, 1])
         let matrix = srt.matrix
         XCTAssertTrue(matrix.isAffine)
-        let decomposed = matrix.decompose
+        let (scale, rotatation, translation) = matrix.decompose
+        let decomposed = SRT(scale: scale, rotation: rotatation, translation: translation)
         XCTAssertEqual(srt, decomposed)
     }
 }
