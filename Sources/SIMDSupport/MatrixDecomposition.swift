@@ -5,7 +5,7 @@ import simd
 // https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
 // https://github.com/g-truc/glm/blob/b3f87720261d623986f164b2a7f6a0a938430271/glm/gtx/matrix_decompose.inl
 
-internal extension simd_float4x4 {
+public extension simd_float4x4 {
     var translation: SIMD3<Float> {
         columns.3.xyz
     }
@@ -121,7 +121,7 @@ internal extension simd_float4x4 {
     }
 }
 
-extension SRT {
+public extension SRT {
     init(scale: SIMD3<Float> = .unit, rotation: simd_float4x4, translation: SIMD3<Float> = .zero) {
         let rotation = simd_quatf(rotation)
         self = SRT(scale: scale, rotation: rotation, translation: translation)
