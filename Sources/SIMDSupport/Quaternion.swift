@@ -30,6 +30,10 @@ extension simd_quatf: Hashable {
     public func hash(into hasher: inout Hasher) {
         vector.hash(into: &hasher)
     }
+
+    public var hashValue: Int {
+        vector.hashValue
+    }
 }
 
 public extension simd_quatf {
@@ -69,6 +73,10 @@ extension simd_quatd: Codable {
 extension simd_quatd: Hashable {
     public func hash(into hasher: inout Hasher) {
         vector.hash(into: &hasher)
+    }
+    
+    public var hashValue: Int {
+        vector.hashValue
     }
 }
 
