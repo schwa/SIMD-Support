@@ -102,14 +102,24 @@ public extension SIMD {
     }
 }
 
-
 public extension SIMD4 {
-    var r: Scalar { x }
-    var g: Scalar { y }
-    var b: Scalar { z }
-    var a: Scalar { w }
+    var r: Scalar {
+        get { x }
+        set { x = newValue }
+    }
+    var g: Scalar {
+        get { y }
+        set { y = newValue }
+    }
+    var b: Scalar {
+        get { z }
+        set { z = newValue }
+    }
+    var a: Scalar {
+        get { w }
+        set { w = newValue }
+    }
 }
-
 
 // MARK: -
 

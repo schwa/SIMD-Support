@@ -6,36 +6,6 @@ public extension simd_quatf {
     }
 }
 
-extension simd_quatf: Codable {
-    enum CodingKeys: CodingKey {
-        case real
-        case imaginary
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let real = try container.decode(Float.self, forKey: .real)
-        let imaginary = try container.decode(SIMD3<Float>.self, forKey: .imaginary)
-        self = .init(real: real, imag: imaginary)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(real, forKey: .real)
-        try container.encode(imag, forKey: .imaginary)
-    }
-}
-
-extension simd_quatf: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        vector.hash(into: &hasher)
-    }
-
-    public var hashValue: Int {
-        vector.hashValue
-    }
-}
-
 public extension simd_quatf {
     init(_ quaternion: simd_quatd) {
         self = simd_quatf(real: Float(quaternion.real), imag: SIMD3<Float>(quaternion.imag))
@@ -67,16 +37,6 @@ extension simd_quatd: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(real, forKey: .real)
         try container.encode(imag, forKey: .imaginary)
-    }
-}
-
-extension simd_quatd: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        vector.hash(into: &hasher)
-    }
-    
-    public var hashValue: Int {
-        vector.hashValue
     }
 }
 
