@@ -7,6 +7,15 @@ public struct Transform: Codable, Hashable {
     public enum Storage: Equatable, Hashable {
         case matrix(simd_float4x4)
         case srt(SRT)
+
+        public func hash(into hasher: inout Hasher) {
+            switch self {
+            case .matrix(let matrix):
+                matrix.scalars.hash(into: &hasher)
+            case .srt(let srt):
+                srt.hash(into: &hasher)
+            }
+        }
     }
 
     public private(set) var storage: Storage
@@ -91,7 +100,9 @@ public struct Transform: Codable, Hashable {
         let kind = try container.decode(String.self, forKey: .kind)
         switch kind {
         case "matrix":
-            storage = .matrix(try container.decode(simd_float4x4.self, forKey: .matrix))
+            let scalars = try container.decode([Float].self, forKey: .matrix)
+            let matrix = simd_float4x4(scalars: scalars)
+            storage = .matrix(matrix)
         case "srt":
             storage = .srt(try container.decode(SRT.self, forKey: .srt))
         default:
@@ -104,7 +115,7 @@ public struct Transform: Codable, Hashable {
         switch storage {
         case let .matrix(matrix):
             try container.encode("matrix", forKey: .kind)
-            try container.encode(matrix, forKey: .matrix)
+            try container.encode(matrix.scalars, forKey: .matrix)
         case let .srt(srt):
             try container.encode("srt", forKey: .kind)
             try container.encode(srt, forKey: .srt)

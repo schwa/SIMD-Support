@@ -34,14 +34,14 @@ extension SRT: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         scale = try container.decodeIfPresent(SIMD3<Float>.self, forKey: .scale) ?? .unit
-        rotation = try container.decodeIfPresent(simd_quatf.self, forKey: .rotation) ?? .identity
+        rotation = try container.decodeIfPresent(SIMD4<Float>.self, forKey: .rotation).map { simd_quatf(vector: $0) } ?? .identity
         translation = try container.decodeIfPresent(SIMD3<Float>.self, forKey: .translation) ?? .zero
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(scale, forKey: .scale)
-        try container.encode(rotation, forKey: .rotation)
+        try container.encode(rotation.vector, forKey: .rotation)
         try container.encode(translation, forKey: .translation)
     }
 }
