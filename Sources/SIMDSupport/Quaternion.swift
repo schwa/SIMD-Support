@@ -45,3 +45,9 @@ public extension simd_quatd {
         self = simd_quatd(real: Double(quaternion.real), imag: SIMD3<Double>(quaternion.imag))
     }
 }
+
+internal extension simd_quatf {
+    var innerDescription: String {
+        return "\(real.formatted()), [\(imag.x.formatted()), \(imag.y.formatted()), \(imag.z.formatted())]"
+    }
+}

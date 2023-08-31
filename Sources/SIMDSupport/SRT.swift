@@ -45,3 +45,16 @@ extension SRT: Codable {
         try container.encode(translation, forKey: .translation)
     }
 }
+
+extension SRT: CustomStringConvertible {
+    public var description: String {
+        "SRT(\(innerDescription))"
+    }
+    
+    internal var innerDescription: String {
+        let scale = scale == .unit ? nil : "scale: [\(scale.x.formatted()), \(scale.y.formatted()), \(scale.z.formatted())]"
+        let rotation = rotation == .identity ? nil : "rotation: \(rotation.innerDescription)"
+        let translation = translation == .zero ? nil : "translation: [\(translation.x.formatted()), \(translation.y.formatted()), \(translation.z.formatted())]"
+        return [scale, rotation, translation].compactMap({ $0 }).joined(separator: ",")
+    }
+}

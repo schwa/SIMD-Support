@@ -140,3 +140,17 @@ public extension Transform {
         rotated(simd_quatf(angle: angle, axis: axis))
     }
 }
+
+extension Transform: CustomStringConvertible {
+    public var description: String {
+        if self == .identity {
+            return "Transform(.identity)"
+        }
+        switch storage {
+        case .matrix(let matrix):
+            return "Transform(\(matrix))"
+        case .srt(let srt):
+            return "Transform(\(srt.innerDescription))"
+        }
+    }
+}
