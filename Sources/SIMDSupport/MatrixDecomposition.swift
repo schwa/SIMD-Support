@@ -10,6 +10,7 @@ public extension simd_float4x4 {
         columns.3.xyz
     }
 
+    // TODO: We need an "isApproxAffine" because this can fail just due to float math
     var isAffine: Bool {
         // First make sure the bottom row meets the condition that it is (0, 0, 0, 1)
         guard rows.3 == [0, 0, 0, 1] else {
@@ -67,7 +68,10 @@ public extension simd_float4x4 {
         return rotation
     }
 
-    var decompose: (scale: SIMD3<Float>, rotation: simd_float4x4, translation: SIMD3<Float>) {
+    var decompose: Optional<(scale: SIMD3<Float>, rotation: simd_float4x4, translation: SIMD3<Float>)> {
+        guard isAffine else {
+            return nil
+        }
         // Copy the matrix first - we'll use this to break down each component
         var copy = self
         // Start by extracting the translation (and/or any projection) from the given matrix
@@ -77,6 +81,7 @@ public extension simd_float4x4 {
         // we successively average the matrix with its inverse transpose until there is
         // no/a very small difference between successive averages
         var norm: Float = 0
+        var lastNorm = norm
         var rotation = copy
         repeat {
             let currInvTranspose = rotation.transpose.inverse
@@ -93,6 +98,11 @@ public extension simd_float4x4 {
                 norm = max(norm, n)
             }
             rotation = nextRotation
+            if norm > Float.ulpOfOne && lastNorm == norm {
+                // Failing to converge. As a precaution bail.
+                return nil
+            }
+            lastNorm = norm
         } while norm > Float.ulpOfOne
 
         // The scale is simply the removal of the rotation from the non-translated matrix
