@@ -3,7 +3,7 @@ import simd
 /**
 A type to represent a 3d transformation as a concatenation of a rotation, a translation and a scale.
 */
-public struct SRT: Hashable {
+public struct SRT {
     public var scale: SIMD3<Float> = .unit
     public var rotation: simd_quatf = .identity
     public var translation: SIMD3<Float> = .zero
@@ -22,6 +22,14 @@ public struct SRT: Hashable {
     }
 }
 
+extension SRT: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        scale.altHash(into: &hasher)
+        rotation.altHash(into: &hasher)
+        translation.altHash(into: &hasher)
+    }
+}
+
 // MARK: -
 
 extension SRT: Codable {
@@ -33,16 +41,16 @@ extension SRT: Codable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        scale = try container.decodeIfPresent(SIMD3<Float>.self, forKey: .scale) ?? .unit
-        rotation = try container.decodeIfPresent(SIMD4<Float>.self, forKey: .rotation).map { simd_quatf(vector: $0) } ?? .identity
-        translation = try container.decodeIfPresent(SIMD3<Float>.self, forKey: .translation) ?? .zero
+        scale = try container.decodeIfPresent([Float].self, forKey: .scale).map { SIMD3<Float>($0) } ?? .unit
+        rotation = try container.decodeIfPresent([Float].self, forKey: .rotation).map { simd_quatf(vector: SIMD4<Float>($0)) } ?? .identity
+        translation = try container.decodeIfPresent([Float].self, forKey: .translation).map { SIMD3<Float>($0) } ?? .zero
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(scale, forKey: .scale)
-        try container.encode(rotation.vector, forKey: .rotation)
-        try container.encode(translation, forKey: .translation)
+        try container.encode(scale.scalars, forKey: .scale)
+        try container.encode(rotation.vector.scalars, forKey: .rotation)
+        try container.encode(translation.scalars, forKey: .translation)
     }
 }
 

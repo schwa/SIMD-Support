@@ -4,18 +4,9 @@ import simd
 A type to represent a 3d transformation as an `SRT` or a SIMD matrix.
 */
 public struct Transform: Codable, Hashable {
-    public enum Storage: Equatable, Hashable {
+    public enum Storage: Equatable {
         case matrix(simd_float4x4)
         case srt(SRT)
-
-        public func hash(into hasher: inout Hasher) {
-            switch self {
-            case .matrix(let matrix):
-                matrix.scalars.hash(into: &hasher)
-            case .srt(let srt):
-                srt.hash(into: &hasher)
-            }
-        }
     }
 
     public private(set) var storage: Storage
@@ -121,6 +112,17 @@ public struct Transform: Codable, Hashable {
         case let .srt(srt):
             try container.encode("srt", forKey: .kind)
             try container.encode(srt, forKey: .srt)
+        }
+    }
+}
+
+extension Transform.Storage: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        switch self {
+        case .matrix(let matrix):
+            matrix.altHash(into: &hasher)
+        case .srt(let srt):
+            srt.hash(into: &hasher)
         }
     }
 }
