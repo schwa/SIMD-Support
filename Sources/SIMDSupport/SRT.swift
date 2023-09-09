@@ -3,7 +3,7 @@ import simd
 /**
 A type to represent a 3d transformation as a concatenation of a rotation, a translation and a scale.
 */
-public struct SRT: Hashable {
+public struct SRT: Equatable {
     public var scale: SIMD3<Float> = .unit
     public var rotation: simd_quatf = .identity
     public var translation: SIMD3<Float> = .zero
@@ -22,8 +22,13 @@ public struct SRT: Hashable {
     }
 }
 
+@available(iOS 17, macOS 14, macCatalyst 17, *)
+extension SRT: Hashable {    
+}
+
 // MARK: -
 
+@available(iOS 17, macOS 14, macCatalyst 17, *)
 extension SRT: Codable {
     enum CodingKeys: CodingKey {
         case scale
