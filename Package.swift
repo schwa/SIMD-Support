@@ -17,11 +17,14 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.1.1")
     ],
     targets: [
         .target(
             name: "SIMDSupport",
-            dependencies: []
+            dependencies: [
+                .product(name: "ApproximateEquality", package: "ApproximateEquality")
+            ]
         ),
         .target(
             name: "SIMDSupportUnsafeConformances",

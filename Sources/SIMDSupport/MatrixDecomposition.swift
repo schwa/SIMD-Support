@@ -1,4 +1,5 @@
 import simd
+@_implementationOnly import ApproximateEquality
 
 // https://callumhay.blogspot.com/2010/10/decomposing-affine-transforms.html
 // https://caff.de/posts/4X4-matrix-decomposition/
@@ -68,10 +69,11 @@ public extension simd_float4x4 {
         return rotation
     }
 
-    var decompose: Optional<(scale: SIMD3<Float>, rotation: simd_float4x4, translation: SIMD3<Float>)> {
-        guard isAffine else {
-            return nil
-        }
+    func decompose(absoluteTolerance: Float = 0.0001) -> (scale: SIMD3<Float>, rotation: simd_float4x4, translation: SIMD3<Float>)? {
+
+        //        guard isAffine else {
+//            return nil
+//        }
         // Copy the matrix first - we'll use this to break down each component
         var copy = self
         // Start by extracting the translation (and/or any projection) from the given matrix
@@ -98,7 +100,7 @@ public extension simd_float4x4 {
                 norm = max(norm, n)
             }
             rotation = nextRotation
-            if norm > Float.ulpOfOne && lastNorm == norm {
+            if norm > Float.ulpOfOne && lastNorm.isApproximatelyEqual(to: norm, absoluteTolerance: absoluteTolerance) {
                 // Failing to converge. As a precaution bail.
                 return nil
             }
