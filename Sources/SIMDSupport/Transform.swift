@@ -72,10 +72,24 @@ public struct Transform: Codable, Hashable {
 
     public var translation: SIMD3<Float> {
         get {
-            srt.translation
+            switch storage {
+            case let .matrix(matrix):
+                return matrix.columns.3.xyz
+            case let .srt(srt):
+                return srt.translation
+            }
         }
         set {
-            srt.translation = newValue
+            switch storage {
+            case let .matrix(matrix):
+                var matrix = matrix
+                matrix.columns.3 = SIMD4(newValue, 1)
+                self.matrix = matrix
+            case let .srt(srt):
+                var srt = srt
+                srt.translation = newValue
+                self.storage = .srt(srt)
+            }
         }
     }
 
@@ -156,5 +170,14 @@ extension Transform: CustomStringConvertible {
         case .srt(let srt):
             return "Transform(\(srt.innerDescription))"
         }
+    }
+}
+
+internal extension Transform.Storage {
+    var isMatrixForm: Bool {
+        if case .matrix = self { return true } else { return false }
+    }
+    var isSRTForm: Bool {
+        if case .srt = self { return true } else { return false }
     }
 }
