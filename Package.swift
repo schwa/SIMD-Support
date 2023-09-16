@@ -23,6 +23,10 @@ let package = Package(
             name: "SIMDSupport",
             dependencies: []
         ),
+        .target(
+            name: "SIMDSupportUnsafeConformances",
+            dependencies: []
+        ),
         .testTarget(
             name: "SIMDSupportTests",
             dependencies: ["SIMDSupport"]
