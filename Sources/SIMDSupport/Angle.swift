@@ -50,6 +50,11 @@ public struct Angle<Value>: Equatable, Hashable, Comparable where Value: BinaryF
 
 // MARK: -
 
+extension Angle: Sendable where Value: Sendable {
+}
+
+// MARK: -
+
 extension Angle: Codable where Value: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()

@@ -1,9 +1,23 @@
 import simd
+import ApproximateEquality
 
 // https://callumhay.blogspot.com/2010/10/decomposing-affine-transforms.html
 // https://caff.de/posts/4X4-matrix-decomposition/
 // https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
 // https://github.com/g-truc/glm/blob/b3f87720261d623986f164b2a7f6a0a938430271/glm/gtx/matrix_decompose.inl
+
+func isApproximatelyEqual(_ lhs: SIMD3<Float>, _ rhs: SIMD3<Float>, epsilon: Float) -> Bool {
+    let difference = abs(lhs - rhs)
+    return (0..<3).allSatisfy({ difference[$0] < epsilon })
+}
+
+func isApproximatelyEqual(_ lhs: simd_float3x3, _ rhs: simd_float3x3, epsilon: Float) -> Bool {
+    zip(lhs.scalars, lhs.scalars).allSatisfy({ abs($0 - $1) < epsilon })
+}
+
+func isApproximatelyEqual(_ lhs: simd_float4x4, _ rhs: simd_float4x4, epsilon: Float) -> Bool {
+    zip(lhs.scalars, lhs.scalars).allSatisfy({ abs($0 - $1) < epsilon })
+}
 
 public extension simd_float4x4 {
     var translation: SIMD3<Float> {
@@ -31,10 +45,10 @@ public extension simd_float4x4 {
         let invTop3x3Matrix = top3x3Matrix.inverse
         let inv3x3Translation = -(invTop3x3Matrix * translation)
         // Make sure we adhere to the conditions of a 4x4 invertible affine transform matrix
-        if inv4x4Top3x3 != invTop3x3Matrix {
+        if !SIMDSupport.isApproximatelyEqual(inv4x4Top3x3, invTop3x3Matrix, epsilon: .ulpOfOne) {
             return false
         }
-        if inv4x4Translation != inv3x3Translation {
+        if !SIMDSupport.isApproximatelyEqual(inv4x4Translation, inv3x3Translation, epsilon: .ulpOfOne) {
             return false
         }
         return true
@@ -68,7 +82,7 @@ public extension simd_float4x4 {
         return rotation
     }
 
-    var decompose: Optional<(scale: SIMD3<Float>, rotation: simd_float4x4, translation: SIMD3<Float>)> {
+    var decompose: (scale: SIMD3<Float>, rotation: simd_float4x4, translation: SIMD3<Float>) {
         // Copy the matrix first - we'll use this to break down each component
         var copy = self
         // Start by extracting the translation (and/or any projection) from the given matrix
@@ -97,7 +111,8 @@ public extension simd_float4x4 {
             rotation = nextRotation
             if norm > Float.ulpOfOne && lastNorm == norm {
                 // Failing to converge. As a precaution bail.
-                return nil
+                break
+                //return (scale: .one, rotation: .identity, translation: translation)
             }
             lastNorm = norm
         } while norm > Float.ulpOfOne
@@ -124,6 +139,10 @@ public extension simd_float4x4 {
             scale.x *= -1
         }
 
+        scale.x = scale.x.isApproximatelyEqual(to: 1.0, absoluteTolerance: .ulpOfOne) ? 1 : scale.x
+        scale.y = scale.x.isApproximatelyEqual(to: 1.0, absoluteTolerance: .ulpOfOne) ? 1 : scale.y
+        scale.z = scale.x.isApproximatelyEqual(to: 1.0, absoluteTolerance: .ulpOfOne) ? 1 : scale.z
+        
         return (scale: scale, rotation: rotation, translation: translation)
     }
 }

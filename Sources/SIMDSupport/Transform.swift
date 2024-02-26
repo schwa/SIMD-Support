@@ -39,9 +39,7 @@ public struct Transform: Codable, Hashable {
         get {
             switch storage {
             case let .matrix(matrix):
-                guard let (scale, rotation, translation) = matrix.decompose else {
-                    fatalError("Failed to decompose matrix: \(matrix)")
-                }
+                let (scale, rotation, translation) = matrix.decompose
                 return SRT(scale: scale, rotation: rotation, translation: translation)
             case let .srt(srt):
                 return srt
@@ -129,6 +127,13 @@ public struct Transform: Codable, Hashable {
         }
     }
 }
+
+extension Transform: Sendable {
+}
+
+extension Transform.Storage: Sendable {
+}
+
 
 extension Transform.Storage: Hashable {
     public func hash(into hasher: inout Hasher) {

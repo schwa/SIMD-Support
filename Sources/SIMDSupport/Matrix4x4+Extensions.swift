@@ -38,6 +38,26 @@ public extension simd_float4x4 {
     }
 }
 
+//// Generic matrix math utility functions
+//func matrix4x4_rotation(radians: Float, axis: SIMD3<Float>) -> matrix_float4x4 {
+//    let unitAxis = normalize(axis)
+//    let ct = cosf(radians)
+//    let st = sinf(radians)
+//    let ci = 1 - ct
+//    let x = unitAxis.x, y = unitAxis.y, z = unitAxis.z
+//    return matrix_float4x4.init(columns:(vector_float4(    ct + x * x * ci, y * x * ci + z * st, z * x * ci - y * st, 0),
+//                                         vector_float4(x * y * ci - z * st,     ct + y * y * ci, z * y * ci + x * st, 0),
+//                                         vector_float4(x * z * ci + y * st, y * z * ci - x * st,     ct + z * z * ci, 0),
+//                                         vector_float4(                  0,                   0,                   0, 1)))
+//}
+//
+//func matrix4x4_translation(_ translationX: Float, _ translationY: Float, _ translationZ: Float) -> matrix_float4x4 {
+//    return matrix_float4x4.init(columns:(vector_float4(1, 0, 0, 0),
+//                                         vector_float4(0, 1, 0, 0),
+//                                         vector_float4(0, 0, 1, 0),
+//                                         vector_float4(translationX, translationY, translationZ, 1)))
+//}
+
 public extension simd_float4x4 {
     @inlinable init(_ m: simd_float3x3) {
         self = simd_float4x4(columns: (
@@ -83,23 +103,21 @@ public extension simd_float4x4 {
 
     @inlinable var scalars: [Scalar] {
         get {
-            withUnsafeBytes(of: self) { buffer in
-                assert(buffer.count == 64)
-                let buffer = buffer.bindMemory(to: Scalar.self)
-                assert(buffer.count == 16)
-                let a = Array(buffer)
-                assert(a.count == 16)
-                return a
-            }
+            return [
+                columns.0.x, columns.0.y, columns.0.z, columns.0.w,
+                columns.1.x, columns.1.y, columns.1.z, columns.1.w,
+                columns.2.x, columns.2.y, columns.2.z, columns.2.w,
+                columns.3.x, columns.3.y, columns.3.z, columns.3.w,
+            ]
         }
         set {
-            newValue.withUnsafeBytes { newValue in
-                assert(newValue.count >= 64)
-                withUnsafeMutableBytes(of: &self) { matrix in
-                    let count = newValue.copyBytes(to: matrix, count: matrix.count)
-                    assert(count == 64)
-                }
-            }
+            self = .init(columns: (
+                [newValue[0], newValue[1], newValue[2], newValue[3]],
+                [newValue[4], newValue[5], newValue[6], newValue[7]],
+                [newValue[8], newValue[9], newValue[10], newValue[11]],
+                [newValue[12], newValue[13], newValue[14], newValue[15]]
+                ))
+                
         }
     }
 }
@@ -116,14 +134,6 @@ public extension simd_float4x4 {
     }
 }
 
-public extension float4x4 {
-    @available(*, deprecated, message: "Too specialised.")
-    @inlinable var normalMatrix: float3x3 {
-        let upperLeft = float3x3(self[0].xyz, self[1].xyz, self[2].xyz)
-        return upperLeft.transpose.inverse
-    }
-}
-
 public extension simd_float4x4 {
     @inlinable func map<R>(_ f: (SIMD4<Float>) throws -> R) rethrows -> [R] {
         try [columns.0, columns.1, columns.2, columns.3].map(f)
@@ -132,12 +142,31 @@ public extension simd_float4x4 {
 
 public extension simd_float3x3 {
     @inlinable init(truncating other: simd_float4x4) {
-        self = other.truncated3x3
+        self = simd_float3x3(other.map(\.xyz).dropLast())
     }
 }
 
-public extension simd_float4x4 {
-    var truncated3x3: simd_float3x3 {
-        simd_float3x3(map(\.xyz).dropLast())
+public extension simd_float3x3 {
+    @inlinable init(scalars: [Scalar]) {
+        self = .identity
+        self.scalars = scalars
+    }
+
+    @inlinable var scalars: [Scalar] {
+        get {
+            return [
+                columns.0.x, columns.0.y, columns.0.z,
+                columns.1.x, columns.1.y, columns.1.z,
+                columns.2.x, columns.2.y, columns.2.z,
+            ]
+        }
+        set {
+            self = .init(columns: (
+                [newValue[0], newValue[1], newValue[2]],
+                [newValue[3], newValue[4], newValue[5]],
+                [newValue[6], newValue[7], newValue[8]]
+                ))
+                
+        }
     }
 }

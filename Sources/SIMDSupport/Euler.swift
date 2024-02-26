@@ -16,7 +16,6 @@ extension Euler: Hashable {
 }
 
 public extension Euler {
-
     static var identity: Self {
         Euler(roll: .zero, pitch: .zero, yaw: .zero)
     }
