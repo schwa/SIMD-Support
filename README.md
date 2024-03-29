@@ -1,5 +1,7 @@
 # SIMDSupport
 
+** IMPORTANT: This project is archived and code is moving **
+
 A set of extensions, new types, and functions for working with SIMD types in Swift.
 
 ## License
